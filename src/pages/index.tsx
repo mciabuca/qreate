@@ -84,7 +84,7 @@ const Home = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4">
-              <Label htmlFor="data">Data / URL</Label>
+              <Label htmlFor="data" className="text-center">Type in anything to make a QR code</Label>
               <Input id="data" placeholder="Enter data or URL" value={url} onChange={(e) => setUrl(e.target.value)} />
             </div>
           </form>
