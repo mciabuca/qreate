@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/ui/ModeToggle";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+
 
 
 const Home = () => {
@@ -17,6 +19,12 @@ const Home = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await generateQR();
+  };
+
+  const handleDownload = (format: 'png' | 'svg') => {
+    if (qrCodeUrl) {
+      downloadImage(format);
+    }
   };
 
   const generateQR = async () => {
@@ -69,28 +77,33 @@ const Home = () => {
       <div className="flex justify-end">
         <ModeToggle />
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid gap-4">
-          <Label htmlFor="data">Data / URL</Label>
-          <Input id="data" placeholder="Enter data or URL" value={url} onChange={(e) => setUrl(e.target.value)} />
-        </div>
-        <div className="flex flex-col items-center space-y-4">
-          <Button onClick={generateQR}>Generate QR Code</Button>
-          <h2 className="text-lg font-semibold">QR Code Preview</h2>
-          <div className="w-64 h-64 bg-gray-100 rounded-md flex items-center justify-center">
-            {qrCodeUrl && <Image alt="QR Code" src={qrCodeUrl} width={500} height={500} className="aspect-square object-contain" />}
-          </div>
-            {qrCodeUrl && (
-              <>
-                <Button onClick={() => downloadImage('png')}>Download PNG</Button>
-                <Button onClick={downloadSVG}>Download SVG</Button>
-              </>
-            )}
-        </div>
-      </form>
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle>QReate</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid gap-4">
+              <Label htmlFor="data">Data / URL</Label>
+              <Input id="data" placeholder="Enter data or URL" value={url} onChange={(e) => setUrl(e.target.value)} />
+            </div>
+          </form>
+          {qrCodeUrl && (
+            <div className="flex flex-col items-center space-y-4">
+              <h2 className="text-lg font-semibold">QR Code Preview</h2>
+                <div className="w-64 h-64 bg-gray-100 rounded-md flex items-center justify-center">
+                  <Image alt="QR Code" src={qrCodeUrl} width={500} height={500} className="aspect-square object-contain" />
+                </div>
+                <div className="flex justify-center gap-4">
+                  <Button type="button" onClick={() => handleDownload('png')}>Download PNG</Button>
+                  <Button type="button" onClick={downloadSVG}>Download SVG</Button>
+                </div>
+              </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
 export default Home;
-
