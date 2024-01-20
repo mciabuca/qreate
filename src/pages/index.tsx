@@ -36,6 +36,34 @@ const Home = () => {
     }
   };
 
+  const downloadImage = (format: 'png' | 'svg') => {
+    if (format === 'png' && qrCodeUrl) {
+      const link = document.createElement('a');
+      link.href = qrCodeUrl;
+      link.download = `qrcode.${format}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const downloadSVG = async () => {
+    try {
+      const svgString = await QRCode.toString(url, { type: 'svg', errorCorrectionLevel: 'H' });
+      const blob = new Blob([svgString], { type: 'image/svg+xml' });
+      const svgUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = svgUrl;
+      link.download = 'qrcode.svg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(svgUrl);
+    } catch (error) {
+      console.error('Error generating QR code SVG:', error);
+    }
+  };
+
   return (
     <div className="grid w-full max-w-2xl gap-6 p-4 mx-auto">
       <div className="flex justify-end">
@@ -52,7 +80,12 @@ const Home = () => {
           <div className="w-64 h-64 bg-gray-100 rounded-md flex items-center justify-center">
             {qrCodeUrl && <Image alt="QR Code" src={qrCodeUrl} width={500} height={500} className="aspect-square object-contain" />}
           </div>
-          {/* add a download button here later */}
+            {qrCodeUrl && (
+              <>
+                <Button onClick={() => downloadImage('png')}>Download PNG</Button>
+                <Button onClick={downloadSVG}>Download SVG</Button>
+              </>
+            )}
         </div>
       </form>
     </div>
